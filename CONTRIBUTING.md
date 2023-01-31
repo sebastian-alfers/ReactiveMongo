@@ -16,8 +16,8 @@ This is the process for a contributor (that is, a non ReactiveMongo core develop
 2. Ensure that your contribution meets the following guidelines:
     1. Live up to the current code standard:
         - Not violate [DRY](http://programmer.97things.oreilly.com/wiki/index.php/Don%27t_Repeat_Yourself).
-        - [Boy Scout Rule](http://programmer.97things.oreilly.com/wiki/index.php/The_Boy_Scout_Rule) needs to have been applied.
-        - Code convention: make sure to run `sbt scalariformFormat test:scalariformFormat` before creating a commit.
+        - [Boy Scout Rule](https://www.oreilly.com/library/view/97-things-every/9780596809515/ch08.html) needs to have been applied.
+        - Code convention: make sure to run `sbt scalafmtAll` before creating a commit.
     2. Regardless if the code introduces new features or fixes bugs or regressions, it must have comprehensive tests.
     3. The code must be well documented in the ReactiveMongo standard documentation format (see the ‘Documentation’ section below). Each API change must have the corresponding documentation change.
     4. Implementation-wise, the following things should be avoided as much as possible:
@@ -49,7 +49,7 @@ Each deprecation must lead to the introduction of appropriate rules in [Reactive
 
 ## Work In Progress
 
-It is ok to work on a public feature branch in the GitHub repository. Something that can sometimes be useful for early feedback etc. If so then it is preferable to name the branch accordingly. This can be done by either prefix the name with ``wip-`` as in ‘Work In Progress’, or use hierarchical names like ``wip/..``, ``feature/..`` or ``topic/..``. Either way is fine as long as it is clear that it is work in progress and not ready for merge. This work can temporarily have a lower standard. However, to be merged into master it will have to go through the regular process outlined above, with Pull Request, review etc.. 
+It is ok to work on a public feature branch in the GitHub repository. Something that can sometimes be useful for early feedback etc. If so then it is preferable to name the branch accordingly. This can be done by either prefix the name with ``wip-`` as in ‘Work In Progress’, or use hierarchical names like ``wip/..``, ``feature/..`` or ``topic/..``. Either way is fine as long as it is clear that it is work in progress and not ready for merge. This work can temporarily have a lower standard. However, to be merged into master it will have to go through the regular process outlined above, with Pull Request, review etc..
 
 Also, to facilitate both well-formed commits and working together, the ``wip`` and ``feature``/``topic`` identifiers also have special meaning.   Any branch labelled with ``wip`` is considered “git-unstable” and may be rebased and have its history rewritten.   Any branch with ``feature``/``topic`` in the name is considered “stable” enough for others to depend on when a group is working on a feature.
 

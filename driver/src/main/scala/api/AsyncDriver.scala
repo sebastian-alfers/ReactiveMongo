@@ -1,14 +1,10 @@
 package reactivemongo.api
 
 import java.util.concurrent.atomic.AtomicLong
-
 import scala.util.{ Failure, Success }
-
 import scala.collection.mutable
-
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future }
 import scala.concurrent.duration.{ FiniteDuration, MILLISECONDS, SECONDS }
-
 import reactivemongo.core.actors.{
   Close,
   Closed,
@@ -18,7 +14,6 @@ import reactivemongo.core.actors.{
   StandardDBSystemWithX509
 }
 import reactivemongo.core.nodeset.Authenticate
-
 import akka.actor.{ Actor, ActorRef, ActorSystem, Props, Terminated }
 import akka.pattern.ask
 import akka.util.Timeout
@@ -48,7 +43,9 @@ import com.typesafe.config.Config
  */
 final class AsyncDriver(
     protected val config: Option[Config] = None,
-    protected val classLoader: Option[ClassLoader] = None) {
+    protected val classLoader: Option[ClassLoader] = None,
+    protected val actorSystem: Option[ActorSystem] = None,
+    protected val dispatcherName: Option[String] = None) {
 
   import scala.collection.mutable.{ Map => MutableMap }
   import AsyncDriver.logger
@@ -62,7 +59,7 @@ final class AsyncDriver(
    * so it can have complete control separate from other
    * Actor Systems in the application
    */
-  private[reactivemongo] val system = {
+  private[reactivemongo] val system = actorSystem.getOrElse {
     import com.typesafe.config.ConfigFactory
 
     val reference = config getOrElse ConfigFactory.load()
@@ -416,7 +413,10 @@ final class AsyncDriver(
 
       logger.info(s"[$supervisorName] Creating connection: $nm")
 
-      import system.dispatcher
+      implicit val disp: ExecutionContextExecutor = dispatcherName match {
+        case Some(config) => system.dispatchers.lookup(config)
+        case None         => system.dispatcher
+      }
 
       connection.mapTo[MongoConnection].map { c =>
         c.history = () => dbsystem.internalState()
